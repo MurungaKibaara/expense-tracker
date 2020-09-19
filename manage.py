@@ -5,12 +5,11 @@ from flask_script import Manager
 
 from app.main import create_app, db
 from app.main.models import users_model
+from app.main.models import blacklist
 from app import blueprint
 
 app = create_app(os.getenv('EXPENSES_APP_ENV') or 'dev')
 app.register_blueprint(blueprint)
-
-app.app_context().push()
 
 app.app_context().push()
 

@@ -1,4 +1,10 @@
+import datetime
+import jwt
+
 from .. import db, flask_bcrypt
+from ..config import key
+
+from app.main.models.blacklist import BlacklistToken
 
 class UserModel(db.Model):
     """ User Model for storing user related details """
@@ -22,3 +28,41 @@ class UserModel(db.Model):
 
     def __repr__(self):
         return "<User '{}'>".format(self.email)
+
+    def encode_auth_token(self, user_id):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                key,
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+            """
+            Decodes the auth token
+            :param auth_token:
+            :return: integer|string
+            """
+            try:
+                payload = jwt.decode(auth_token, key)
+                is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
+                if is_blacklisted_token:
+                    return 'Token blacklisted. Please log in again.'
+                else:
+                    return payload['sub']
+            except jwt.ExpiredSignatureError:
+                return 'Signature expired. Please log in again.'
+            except jwt.InvalidTokenError:
+                return 'Invalid token. Please log in again.'
