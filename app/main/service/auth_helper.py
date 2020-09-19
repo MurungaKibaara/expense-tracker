@@ -60,8 +60,9 @@ class Auth:
     @staticmethod
     def get_logged_in_user(new_request):
             # get the auth token
-            auth_token = new_request.headers.get('Authorization')
-            if auth_token:
+            auth_header = new_request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split( )[1]
                 resp = User.decode_auth_token(auth_token)
                 if not isinstance(resp, str):
                     user = User.query.filter_by(id=resp).first()
@@ -70,8 +71,7 @@ class Auth:
                         'data': {
                             'user_id': user.id,
                             'email': user.email,
-                            'admin': user.admin,
-                            'registered_on': str(user.registered_on)
+                            'public_id': user.public_id,
                         }
                     }
                     return response_object, 200

@@ -6,22 +6,20 @@ from app.main.service.auth_helper import Auth
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-
+        
         data, status = Auth.get_logged_in_user(request)
-        token = data.get('data')
+        current_user = data.get('data')
 
-        if not token:
+        if not current_user:
             return data, status
-
-        return f(*args, **kwargs)
+ 
+        return f(current_user=current_user, *args, **kwargs)
 
     return decorated
-
 
 def admin_token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-
         data, status = Auth.get_logged_in_user(request)
         token = data.get('data')
 
@@ -36,6 +34,6 @@ def admin_token_required(f):
             }
             return response_object, 401
 
-        return f(*args, **kwargs)
+        return f(admin, *args, **kwargs)
 
     return decorated

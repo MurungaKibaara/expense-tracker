@@ -4,7 +4,6 @@ import datetime
 from app.main import db
 from app.main.models.users_model import UserModel as User
 
-
 def save_new_user(data):
     user = User.query.filter_by(email=data['email']).first()
     if not user:
@@ -24,7 +23,8 @@ def save_new_user(data):
         return response_object, 409
 
 
-def get_all_users():
+def get_all_users(current_user):
+    print(current_user)
     return User.query.all()
 
 def get_a_user(public_id):
