@@ -1,8 +1,8 @@
-"""Initial Migrations
+"""Initial database
 
-Revision ID: 258e98710775
+Revision ID: 5308a68fa310
 Revises: 
-Create Date: 2020-09-20 01:16:53.239110
+Create Date: 2020-10-03 18:52:10.250759
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '258e98710775'
+revision = '5308a68fa310'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,14 +28,18 @@ def upgrade():
     op.create_table('category',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(length=128), nullable=True),
+    sa.Column('slug', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
+    sa.UniqueConstraint('name'),
+    sa.UniqueConstraint('slug')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('create_date', sa.TIMESTAMP(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('public_id', sa.String(length=100), nullable=True),
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('password_hash', sa.String(length=100), nullable=True),
+    sa.Column('admin', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('public_id')
@@ -45,7 +49,8 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('amount', sa.Float(), nullable=False),
-    sa.Column('date_posted', sa.String(), nullable=False),
+    sa.Column('date_expense', sa.Date(), nullable=False),
+    sa.Column('create_date', sa.TIMESTAMP(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('slug', sa.String(length=255), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category.id'], ),

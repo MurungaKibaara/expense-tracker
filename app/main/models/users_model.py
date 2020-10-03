@@ -15,7 +15,7 @@ class UserModel(db.Model):
     public_id = db.Column(db.String(100), unique=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(100))
-    admin = db.Column(db.Boolean, default=False)
+    admin = db.Column(db.Boolean, nullable=False, default=False)
 
     @property
     def password(self):

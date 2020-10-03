@@ -1,7 +1,9 @@
 from datetime import datetime
+from dateutil import parser
 
 from app.main import db
 from app.main.models.expenses_model import ExpenseModel as Expense
+from app.main.models.categories_model import CategoryModel as Category
 
 def save_new_expense(current_user, data):
     current_user_id = current_user['user_id']
@@ -10,12 +12,13 @@ def save_new_expense(current_user, data):
         name=data['name'],
         amount=data['amount'],
         category_id=data['category_id'],
-        date_expense=data['date_expense'],
+        date_expense=parser.parse(data['date_expense']),
     )
     try:
-        category = db.Category.filter_by(id=category_id)
+        category_id=data['category_id'],
+        category = db.session.query(Category).filter_by(id=category_id[0]).all()
 
-        if category is None or category is False:
+        if len(category) == 0 or category is None:
             response_object = {
                 'status': 'fail',
                 'message': 'category does not exist!'
@@ -26,12 +29,13 @@ def save_new_expense(current_user, data):
         response_object = {
             'status': 'success',
             'message': 'Expense Added!'
-        }  
+        } 
         return response_object, 201
-    except:
+    except Exception as e:
         response_object = {
             'status': 'fail',
             'message': 'Something happended. Please try again.',
+            "error": str(e)
         }
         return  response_object, 400
   
