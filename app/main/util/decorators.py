@@ -34,6 +34,6 @@ def admin_token_required(f):
             }
             return response_object, 401
 
-        return f(admin, *args, **kwargs)
+        return f(*args, **kwargs)
 
     return decorated

@@ -1,6 +1,7 @@
 from flask import request
 from flask_restplus import Resource
 
+from ..util.decorators import admin_token_required
 from ..util.category_dto import CategoryDto
 from ..service.category_service import save_new_category, get_all_categories, get_a_category
 
@@ -17,6 +18,7 @@ class CategoryList(Resource):
 
     @api.response(201, 'Category successfully Created.')
     @api.doc('create a new category')
+    @admin_token_required
     @api.expect(_category, validate=True)
     def post(self):
         """Creates a new category"""

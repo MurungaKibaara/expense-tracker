@@ -5,7 +5,8 @@ class UserDto:
     user = api.model('user', {
         'email': fields.String(required=True, description='user email address'),
         'password': fields.String(required=True, description='user password'),
-        'public_id': fields.String(description='user Identifier')
+        'public_id': fields.String(description='user Identifier'),
+        'admin': fields.Boolean(required=True,description='Admin')
     })
 
 class AuthDto:

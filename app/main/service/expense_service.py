@@ -10,9 +10,18 @@ def save_new_expense(current_user, data):
         name=data['name'],
         amount=data['amount'],
         category_id=data['category_id'],
-        date_posted=str(datetime.now()),
+        date_expense=data['date_expense'],
     )
     try:
+        category = db.Category.filter_by(id=category_id)
+
+        if category is None or category is False:
+            response_object = {
+                'status': 'fail',
+                'message': 'category does not exist!'
+            }
+            return response_object, 400
+
         save_changes(new_expense)
         response_object = {
             'status': 'success',

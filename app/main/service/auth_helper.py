@@ -72,6 +72,7 @@ class Auth:
                             'user_id': user.id,
                             'email': user.email,
                             'public_id': user.public_id,
+                            'admin': user.admin,
                         }
                     }
                     return response_object, 200

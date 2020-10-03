@@ -11,9 +11,11 @@ class UserModel(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    create_date = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp(), nullable=False)
     public_id = db.Column(db.String(100), unique=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(100))
+    admin = db.Column(db.Boolean, default=False)
 
     @property
     def password(self):

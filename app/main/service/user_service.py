@@ -11,6 +11,7 @@ def save_new_user(data):
             public_id=str(uuid.uuid4()),
             email=data['email'],
             password=data['password'],
+            admin=data['admin'] or False
         )
         save_changes(new_user)
         return generate_token(new_user)
